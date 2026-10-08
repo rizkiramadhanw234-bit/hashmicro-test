@@ -162,8 +162,16 @@ export class UserService {
   };
 
   logoutUser = async (refreshToken: string) => {
+    if (!refreshToken) {
+      throw new AppError("unauthorized", HTTP_STATUS.UNAUTHORIZED);
+    }
+
+    const hashedToken = crypto
+      .createHash("sha256")
+      .update(refreshToken)
+      .digest("hex");
     const token = await this.tokenRepo.findOne({
-      where: { refreshToken },
+      where: { refreshToken: hashedToken },
     });
     if (!token) {
       throw new AppError("unauthorized", HTTP_STATUS.UNAUTHORIZED);

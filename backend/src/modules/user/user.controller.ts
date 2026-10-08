@@ -96,6 +96,13 @@ export class UserController extends BaseController {
       });
       res.status(200).json({ message: "user logged out" });
     } catch (error) {
+      console.log(error);
+      res.clearCookie("refreshToken", {
+        httpOnly: true,
+        sameSite: "lax",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+        secure: process.env.NODE_ENV === "production",
+      });
       this.handleError(res, error);
     }
   };

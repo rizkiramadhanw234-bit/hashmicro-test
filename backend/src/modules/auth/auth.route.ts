@@ -20,7 +20,7 @@ const router = Router();
 
 router.post("/create", validateBody(createUserSchema), controller.createUser);
 router.post("/login", controller.loginUser);
-router.post("/logout", authMiddleware, controller.logoutUser);
+router.post("/logout", controller.logoutUser);
 router.post("/refresh-token", controller.refreshToken);
 
 export default router;
