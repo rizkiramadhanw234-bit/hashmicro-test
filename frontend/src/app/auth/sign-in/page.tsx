@@ -66,7 +66,9 @@ export default function Page() {
             Enter your email below to login to your account
           </CardDescription>
           <CardAction>
-            <Button variant="link">Sign Up</Button>
+            <Button variant="link" onClick={() => router.push("/auth/sign-up")}>
+              Sign Up
+            </Button>
           </CardAction>
         </CardHeader>
         <CardContent>
