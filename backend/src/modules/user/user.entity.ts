@@ -1,5 +1,5 @@
 import { BaseEntity } from "../../entities/base.entity.js";
-import { Column, Entity, OneToMany } from "typeorm";
+import { Column, Entity, OneToMany, Relation } from "typeorm";
 import { RefreshToken } from "./token.entity.js";
 import { Session } from "./session.entity.js";
 
@@ -23,8 +23,8 @@ export class User extends BaseEntity {
 
   //   relations
   @OneToMany(() => RefreshToken, (token) => token.user)
-  refreshToken: RefreshToken[];
+  refreshToken: Relation<RefreshToken[]>;
 
   @OneToMany(() => Session, (ses) => ses.user)
-  session: Session[];
+  session: Relation<Session[]>;
 }

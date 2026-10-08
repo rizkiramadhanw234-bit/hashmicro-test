@@ -1,5 +1,12 @@
 import { BaseEntity } from "../../entities/base.entity.js";
-import { Column, Entity, OneToMany, ManyToOne, JoinColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  OneToMany,
+  ManyToOne,
+  JoinColumn,
+  Relation,
+} from "typeorm";
 import { User } from "./user.entity.js";
 import { Session } from "./session.entity.js";
 
@@ -25,11 +32,11 @@ export class RefreshToken extends BaseEntity {
     onUpdate: "CASCADE",
   })
   @JoinColumn({ name: "user_id" })
-  user: User;
+  user: Relation<User>;
 
   @OneToMany(() => Session, (ses) => ses.refreshToken, {
     onDelete: "CASCADE",
     onUpdate: "CASCADE",
   })
-  session: Session[];
+  session: Relation<Session[]>;
 }
