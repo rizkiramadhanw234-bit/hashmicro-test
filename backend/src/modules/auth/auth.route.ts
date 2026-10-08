@@ -5,7 +5,6 @@ import { AppDataSource } from "../../configs/db.js";
 import { User } from "../user/user.entity.js";
 import { Session } from "../user/session.entity.js";
 import { RefreshToken } from "../user/token.entity.js";
-import { authMiddleware } from "../../middlewares/auth.middleware.js";
 import { validateBody } from "../../middlewares/validate.middleware.js";
 import { createUserSchema } from "../user/user.validation.js";
 
