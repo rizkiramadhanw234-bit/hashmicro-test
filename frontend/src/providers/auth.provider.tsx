@@ -1,7 +1,6 @@
 "use client";
 
-import { axiosApi } from "@/services/axios";
-import type { AuthResponse } from "@/types/auth.type";
+import { refreshToken } from "@/services/auth.service";
 import { useAuthStore } from "@/stores/auth.store";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -16,13 +15,9 @@ export default function AuthProvider({
   const { accessToken, setUser, isHydrated } = useAuthStore();
 
   useEffect(() => {
-    axiosApi
-      .post<AuthResponse>("/auth/refresh-token")
+    refreshToken()
       .then((res) => {
-        if (!res.data.accessToken) {
-          router.push("/auth/sign-in");
-        }
-        setUser(res.data);
+        setUser(res);
         setLoading(false);
       })
       .catch(() => {

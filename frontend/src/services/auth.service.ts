@@ -1,4 +1,4 @@
-import { axiosApi } from "./axios";
+import { axiosApi, refreshAuth } from "./axios";
 import type {
   LoginRequest,
   AuthResponse,
@@ -19,4 +19,9 @@ export async function loginUser(data: LoginRequest) {
 export async function logoutUser() {
   const res = await axiosApi.post("/auth/logout");
   res.data;
+}
+
+export async function refreshToken() {
+  const res = await refreshAuth();
+  return res.data;
 }
