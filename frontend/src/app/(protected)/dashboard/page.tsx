@@ -2,7 +2,26 @@
 
 import { useFindAllProducts } from "@/hooks/product.hook";
 import { useProductStore } from "@/stores/product.store";
+import { useLogoutUser } from "@/hooks/auth.hooks";
 import { useState, useRef } from "react";
+
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Input } from "@/components/ui/input";
+import {
+  NativeSelect,
+  NativeSelectOption,
+} from "@/components/ui/native-select";
+import ProductModal from "@/components/modals/product.modal";
+import ProductDelete from "@/components/modals/product.delete";
+import { Button } from "@/components/ui/button";
 
 export default function Page() {
   const types = [
@@ -22,13 +41,107 @@ export default function Page() {
     type,
   );
   const productsData = products?.data ?? [];
-  console.log(productsData);
+  const totalProducts = products?.meta.total ?? 0;
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(e.target.value);
+    if (debouncedSearch.current) {
+      clearTimeout(debouncedSearch.current);
+    }
+
+    debouncedSearch.current = setTimeout(() => {
+      setProductName(e.target.value);
+      setPage(1);
+    }, 500);
+  };
+
+  const handleSelectTypes = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setType(e.target.value);
+    setPage(1);
+  };
+
+  const { mutateAsync: logout, isPending: isLogoutPending } = useLogoutUser();
+  const handleLogout = async () => {
+    await logout();
+  };
 
   return (
-    <>
-      <div>
-        <h1>sada</h1>
+    <div className="p-6">
+      <div className="pb-2 flex items-center justify-between">
+        <div className="flex gap-4">
+          <Input
+            className="w-50"
+            placeholder="Search product..."
+            value={search}
+            onChange={handleSearch}
+          />
+
+          <NativeSelect onChange={handleSelectTypes}>
+            <NativeSelectOption value="">Select types</NativeSelectOption>
+            {types.map((data) => (
+              <NativeSelectOption key={data.value} value={data.value}>
+                {data.label}
+              </NativeSelectOption>
+            ))}
+          </NativeSelect>
+        </div>
+
+        <div className="flex gap-4 items-center">
+          <ProductModal data={null} />
+          <Button variant="default" onClick={handleLogout}>
+            {isLogoutPending ? "Loading..." : "Logout"}
+          </Button>
+        </div>
       </div>
-    </>
+
+      {isLoading ? (
+        <div className="flex h-screen items-center justify-center">
+          <p>Loading...</p>
+        </div>
+      ) : (
+        <>
+          {productsData.length === 0 ? (
+            <div>
+              <p>Product not found</p>
+            </div>
+          ) : (
+            <>
+              <Table>
+                <TableCaption>Total Products: {totalProducts}</TableCaption>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-25">No.</TableHead>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Price</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Percentage</TableHead>
+                    <TableHead>Match Chars</TableHead>
+                    <TableHead>Match Count</TableHead>
+                    <TableHead className="text-right">Action</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {productsData.map((data, i) => (
+                    <TableRow key={data.id}>
+                      <TableCell className="font-medium">{i + 1}</TableCell>
+                      <TableCell>{data.productName}</TableCell>
+                      <TableCell>{data.price}</TableCell>
+                      <TableCell>{data.status ?? "-"}</TableCell>
+                      <TableCell>{data.percentage ?? "-"}</TableCell>
+                      <TableCell>{data.matchedChars ?? "-"}</TableCell>
+                      <TableCell>{data.matchedCount ?? "-"}</TableCell>
+                      <TableCell className="text-right">
+                        <ProductModal data={data} />
+                        <ProductDelete id={data.id} />
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </>
+          )}
+        </>
+      )}
+    </div>
   );
 }

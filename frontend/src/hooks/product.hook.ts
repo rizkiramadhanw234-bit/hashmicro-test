@@ -69,7 +69,11 @@ export function useFindAllProducts(
   return useQuery({
     queryKey: productKeys.list(limit, offset, productName, type),
     queryFn: async () => {
-      return await findAllProducts(limit, offset, productName, type);
+      try {
+        return await findAllProducts(limit, offset, productName, type);
+      } catch (error) {
+        return null;
+      }
     },
   });
 }

@@ -1,9 +1,13 @@
-import { Inter_Tight } from "next/font/google";
 import { BaseType } from "./base.type";
 
 export interface ProductType extends BaseType {
   productName: string;
   price: number;
+  matchedChars: string[];
+  matchedCount: number;
+  totalChars: number;
+  percentage: string;
+  status: MatchStatus;
 }
 
 export interface ProductRequest {
@@ -14,17 +18,6 @@ export interface ProductRequest {
 export type UpdateProduct = Partial<ProductRequest>;
 
 export type MatchStatus = "partial match" | "full match";
-
-export interface ProductType {
-  id: string;
-  productName: string;
-  price: number;
-  matchedChars: string[];
-  matchedCount: number;
-  totalChars: number;
-  percentage: string;
-  status: MatchStatus;
-}
 
 export interface ProductMeta {
   total: number;
