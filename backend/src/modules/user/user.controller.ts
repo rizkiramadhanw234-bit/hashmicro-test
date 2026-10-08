@@ -77,8 +77,10 @@ export class UserController extends BaseController {
         maxAge: 7 * 24 * 60 * 60 * 1000,
         secure: process.env.NODE_ENV === "production",
       });
+
       res.status(200).json({ message: "new refresh token", accessToken, data });
     } catch (error) {
+      console.log(error);
       this.handleError(res, error);
     }
   };

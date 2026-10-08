@@ -114,9 +114,6 @@ export class UserService {
   };
 
   refreshToken = async (refreshToken: string) => {
-    if (!refreshToken) {
-      throw new AppError("unauthorized", HTTP_STATUS.UNAUTHORIZED);
-    }
     const hashedToken = crypto
       .createHash("sha256")
       .update(refreshToken)
@@ -162,10 +159,6 @@ export class UserService {
   };
 
   logoutUser = async (refreshToken: string) => {
-    if (!refreshToken) {
-      throw new AppError("unauthorized", HTTP_STATUS.UNAUTHORIZED);
-    }
-
     const hashedToken = crypto
       .createHash("sha256")
       .update(refreshToken)
