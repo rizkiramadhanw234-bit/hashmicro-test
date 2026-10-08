@@ -83,8 +83,8 @@ describe("UserController", () => {
 
   describe("createUser", () => {
     it("creates a user and returns 201", async () => {
-      const body = { email: "john@example.com" } as unknown as UserRequest;
-      const created = { id: "1", email: "john@example.com" };
+      const body = { email: "rizki@example.com" } as unknown as UserRequest;
+      const created = { id: "1", email: "rizki@example.com" };
       service.createUser.mockResolvedValue({ data: created });
 
       await controller.createUser(createMockRequest({ body }), res);
