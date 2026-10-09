@@ -25,7 +25,7 @@ Buat file `backend/.env`:
 ```env
 PORT=5000
 FRONTEND_URL=http://localhost:3000
-JWT_SECRET_KEY=buat-secret-acak-yang-kuat
+JWT_SECRET_KEY=kudukuats 
 JWT_EXPIRES_IN=15m
 NODE_ENV=development
 ```
