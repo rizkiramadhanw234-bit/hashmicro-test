@@ -4,6 +4,7 @@ import { useFindAllProducts } from "@/hooks/product.hook";
 import { useProductStore } from "@/stores/product.store";
 import { useLogoutUser } from "@/hooks/auth.hooks";
 import { useState, useRef } from "react";
+import { usePathname, useSearchParams, useRouter } from "next/navigation";
 
 import {
   Table,
@@ -29,9 +30,14 @@ export default function Page() {
     { label: "Non Sensitive", value: "non_sensitive" },
   ];
 
-  const { page, setPage, productName, setProductName, setType, type } =
-    useProductStore();
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const productName = searchParams.get("name") ?? "";
+  const type = searchParams.get("type") ?? "";
   const [search, setSearch] = useState(productName ?? "");
+
   const debouncedSearch = useRef<ReturnType<typeof setTimeout>>(null);
 
   const { data: products, isLoading } = useFindAllProducts(
@@ -43,21 +49,31 @@ export default function Page() {
   const productsData = products?.data ?? [];
   const totalProducts = products?.meta.total ?? 0;
 
+  const updateParams = (updates: Record<string, string | number | null>) => {
+    const params = new URLSearchParams(searchParams.toString());
+
+    Object.entries(updates).forEach(([key, value]) => {
+      if (value === null || value === "") params.delete(key);
+      else params.set(key, String(value));
+    });
+
+    router.replace(`${pathname}?${params.toString()}`);
+  };
+
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch(e.target.value);
+    const value = e.target.value;
+    setSearch(value);
     if (debouncedSearch.current) {
       clearTimeout(debouncedSearch.current);
     }
 
     debouncedSearch.current = setTimeout(() => {
-      setProductName(e.target.value);
-      setPage(1);
+      updateParams({ name: value, page: 1 });
     }, 500);
   };
 
   const handleSelectTypes = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setType(e.target.value);
-    setPage(1);
+    updateParams({ type: e.target.value, page: 1 });
   };
 
   const { mutateAsync: logout, isPending: isLogoutPending } = useLogoutUser();
